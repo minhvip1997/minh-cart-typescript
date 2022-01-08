@@ -5,8 +5,10 @@ import {
 import Badge from "@material-ui/core/Badge";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import  './Navbar.css';
+import { useAppSelector } from '../hooks';
 
 function Navbar() {
+    const itemCount = useAppSelector((state) => state.product.itemCount);
     return (
         <div className='topnav'>
         <NavLink to="/" activeClassName="active" exact={true}>
@@ -16,7 +18,7 @@ function Navbar() {
             Product
         </NavLink>
         <NavLink to="/cart" activeClassName="active" id="cart" className="cis-cart">
-        <Badge color="secondary" badgeContent={1}>
+        <Badge color="secondary" badgeContent={itemCount}>
           <ShoppingCartIcon />
         </Badge>
         </NavLink>
