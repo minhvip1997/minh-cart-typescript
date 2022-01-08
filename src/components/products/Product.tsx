@@ -1,11 +1,19 @@
 import React from 'react';
 import './Product.css';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { useAppSelector } from '../hooks';
+import { addCart } from '../redux/productSlice';
+import { typeProduct } from '../redux/typeProduct';
 
 function Product() {
     const productList = useAppSelector((state) => state.product.productList);
+    const dispatch = useDispatch();
+    const handleAddItemCart =(product: typeProduct)=>{
+        console.log(product);
+        
+        dispatch(addCart(product))
+    }
     return (
         <div>
             <h2>Product Table</h2>
@@ -23,7 +31,7 @@ function Product() {
                 <td>{product.name}</td>
                 <td>{product.price}</td>
                 <td>
-                <button>Add</button>
+                <button onClick={()=> handleAddItemCart(product)}>Add</button>
                 </td>
             </tr>
             ))}

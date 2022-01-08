@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
 
-import { Product } from '../redux/typeProduct';
+import { typeItemCart,typeProduct } from '../redux/typeProduct';
 
 //Defining our initialState's type
 type initialStateType = {
-  productList: Product[];
+  productList: typeProduct[];
   itemCount: number;
-  cart: Product[]
+  carts: typeItemCart[]
 };
 
-const productList: Product[] = [
+const productList: typeProduct[] = [
   {
     id: 1,
     name: '1984',
@@ -43,19 +43,62 @@ const productList: Product[] = [
   },
 ];
 const itemCount: number =0;
-const cart: Product[] = [];
+const carts: typeItemCart[] = [];
 
 const initialState: initialStateType = {
     productList,
     itemCount,
-    cart
+    carts
 };
 
 export const productSlice = createSlice({
   name: 'product',
   initialState,
   reducers: {
+    addCart:(state, action: PayloadAction<typeProduct>)=>{
+      let  foundIndex = state.carts.findIndex(x => x.id === action.payload.id);
+
+      if(foundIndex === -1){
+
+        let cart= {
+          id: action.payload.id,
+          name: action.payload.name,
+          price: action.payload.price,
+          quantity: 1,
+          totalunitprice: action.payload.price
+        }
+        state.carts.push(cart)
+        state.itemCount+=1
+       
+      }else{
+        state.carts.forEach(function(item){
+          if(item.id === action.payload.id){
+            item.quantity = item.quantity+1;
+            item.totalunitprice = item.totalunitprice+item.price;
+          }
+        })
+        state.itemCount+=1
+      }
     
+    },
+    incrementQuantity: (state,action:PayloadAction<typeItemCart>)=>{
+      state.carts.forEach(function(item){
+        if(item.id === action.payload.id){
+          item.quantity = item.quantity+1;
+          item.totalunitprice = item.totalunitprice+item.price;
+        }
+      })
+      state.itemCount+=1
+    },
+    decrementQuantity: (state, action:PayloadAction<typeItemCart>)=>{
+      state.carts.forEach(function(item){
+        if(item.id === action.payload.id){
+          item.quantity = item.quantity-1;
+          item.totalunitprice = item.totalunitprice-item.price;
+        }
+      })
+      state.itemCount-=1
+    }
   },
 });
 
@@ -65,4 +108,6 @@ export const productSlice = createSlice({
 //Selector to access bookList state.
 // export const selectBookList = (state: RootState) => state.book.bookList;
 export const selectProductList = (state: RootState) => state.product.productList;
+export const selectCartItem = (state: RootState) => state.product.carts;
+export const { addCart,incrementQuantity,decrementQuantity } = productSlice.actions;
 export default productSlice.reducer;
